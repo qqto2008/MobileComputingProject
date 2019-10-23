@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            startActivity(new Intent(MainActivity.this, Weather.class));
+                            startActivity(new Intent(MainActivity.this, MapsWeatherActivity.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

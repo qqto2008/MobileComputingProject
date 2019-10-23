@@ -72,7 +72,7 @@ public class Registration extends AppCompatActivity {
         startActivity(intent);
     }
     public void openMenu(){
-        Intent intent = new Intent(this, Weather.class);
+        Intent intent = new Intent(this, MapsWeatherActivity.class);
         startActivity(intent);
     }
 
