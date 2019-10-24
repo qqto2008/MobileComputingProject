@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,6 +47,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     LocationRequest locationRequest;
     LocationCallback locationCallBack;
     TextView degreeTextView;
+    Button goToNotification;
     //b6907d289e10d714a6e88b30761fae22 api key
 
     @SuppressLint("SetTextI18n")
@@ -103,6 +107,15 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 }
             }
         };
+
+        goToNotification = findViewById(R.id.goToNotificationBtn);
+        goToNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsWeatherActivity.this,SetupNotification.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
