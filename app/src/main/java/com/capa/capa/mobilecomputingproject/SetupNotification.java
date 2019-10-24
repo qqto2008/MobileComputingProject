@@ -105,7 +105,7 @@ public class SetupNotification extends AppCompatActivity {
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     //Call AlarmReceiver
                     Intent intent = new Intent(SetupNotification.this, AlarmReceiver.class);
-                    String notificationContent = "Today's temperature is "+temp;
+                    String notificationContent = "";
                     double temperature = Double.parseDouble(temp);
                     if(temperature<0){
                         notificationContent+="you need to keep your head and ears warm when you are inactive with at least two layers, such as a beanie or balaclava under the hood of your jacket";
@@ -142,9 +142,10 @@ public class SetupNotification extends AppCompatActivity {
                     }else if(descriptionCondition.equals("mist")){
                         notificationContent+="\nMIST CONDITION!, DON'T FORGET TURN ON YOUR MIST LIGHT";
                     }
-                    intent.putExtra("title", descriptionCondition);
+                    intent.putExtra("title", descriptionCondition+"  "+temp+"°");
                     intent.putExtra("content",notificationContent);
-                    Log.i("Notification added",notificationContent);
+                    intent.putExtra("discription",descriptionCondition);
+
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(SetupNotification.this, 1, intent, 0);
                     assert alarmManager != null;
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);

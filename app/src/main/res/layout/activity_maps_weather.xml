@@ -21,15 +21,39 @@
         android:textColor="#ffffff"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/goToNotificationBtn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/button"
+        android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/set_notification"
+        android:textColor="#FE5295"
+        android:textSize="17sp"
         android:translationZ="1dp"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/goToNotificationBtn"/>
+        map:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/notificationboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="13dp"
+        android:textColor="@android:color/black"
+        android:text="Hello word"
+        android:translationZ="1dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        map:layout_constraintBottom_toTopOf="@+id/goToNotificationBtn"
+        map:layout_constraintEnd_toEndOf="@+id/map"
+        map:layout_constraintStart_toStartOf="@+id/map"
+        android:background="#72A59E9E"
+        android:paddingTop="0dp"/>
 
     <ImageView
         android:id="@+id/weatherIcon"

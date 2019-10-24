@@ -3,13 +3,17 @@ package com.capa.capa.mobilecomputingproject;
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 class NotificationService extends ContextWrapper {
 
@@ -41,14 +45,19 @@ class NotificationService extends ContextWrapper {
     }
 
     //Define what happen in notification
-    public NotificationCompat.Builder getChannelNotification(String title,String content) {
+    public NotificationCompat.Builder getChannelNotification(String title,String content,String discription) {
 
+        String mDrawableName = discription.trim();
+        mDrawableName = mDrawableName.replace(" ","");
+        int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
+        Intent resultIntent = new Intent(this,MapsWeatherActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-
-                //Notification Information
                 .setContentTitle(title) //Title
                 .setContentText(content) //Text Inside notification
-                .setSmallIcon(R.drawable.ic_launcher_background); //Small Icon (res->drawable)
+                .setSmallIcon(resID)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent); //Small Icon (res->drawable)
 
     }
 }

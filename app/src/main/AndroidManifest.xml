@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SetupNotification" />
+        <activity android:name=".SetupNotification"
+            android:launchMode="singleInstance"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -29,16 +30,18 @@
         <activity
             android:name=".MapsWeatherActivity"
             android:label="@string/title_activity_maps_weather"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".Registration"
             android:windowSoftInputMode="adjustPan"
-
+            android:launchMode="singleInstance"
             />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

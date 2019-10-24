@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -29,6 +31,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,7 +57,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallBack;
-    TextView degreeTextView;
+    TextView degreeTextView,notificationBoardTextView;
     Button goToNotification;
     ImageView weatherIcon;
     //b6907d289e10d714a6e88b30761fae22 api key
@@ -70,10 +74,21 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         degreeTextView = findViewById(R.id.degreeTextView);
+        notificationBoardTextView = findViewById(R.id.notificationboard);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 getTemp(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
+                LatLng sydney = new LatLng(location.getLatitude(),location.getLongitude());
+
+                int height = 100;
+                int width = 100;
+                BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.mite);
+                Bitmap b=bitmapdraw.getBitmap();
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                mMap.addMarker(new MarkerOptions().position(sydney)
+                        .title("Marker in Sydney").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             }
         });
 
@@ -212,8 +227,46 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                     break;
             }
             String temp = weather.getString("temp");
+            String notificationContent = "";
+            double temperature = Double.parseDouble(temp);
+            if(temperature<0){
+                notificationContent+="you need to keep your head and ears warm when you are inactive with at least two layers, such as a beanie or balaclava under the hood of your jacket";
+            }else if(0<=temperature&&temperature<10){
+                notificationContent+="\nOuterwear: Padded or Puffer Coat, Overcoats (Trench Coats, Fur or Faux Fur Coats), Down Jackets\n" +
+                        "Tops: Sweaters, Jumpers, Turtlenecks\n" +
+                        "Bottoms: Jeans, Trousers";
+            }else if(temperature>=10&&temperature<20){
+                notificationContent+="\nTops (for Layering): Shirts, Hoodies, Dresses\n" +
+                        "Lightweight Outerwear: Leather jackets, Biker jackets, Parkas, Pea Coats\n" +
+                        "Bottoms: Jeans, Trousers, Skirts Shoes: Sneakers, Boots";
+
+            }else if(temperature>=20&&temperature<30){
+                notificationContent+="This is summer weather – no need to wear layers of clothing or thick fabric. Instead, find something that will keep you fresh. It can get humid at this time of the year too, which will make you feel even hotter. ";
+            }else if(temperature>=30&&temperature<40){
+                notificationContent+="You need to adjust your wardrobe and wear airy clothes. Avoid wearing tight garments as they may lead to skin irritation due to friction and heat.";
+            }else if(temperature>=40){
+                notificationContent+="You need to adjust your wardrobe and wear airy clothes. Avoid wearing tight garments as they may lead to skin irritation due to friction and heat.";
+            }
+            if(descriptionCondition.equals("few clouds")){
+
+            }else if(descriptionCondition.equals("clear sky")){
+
+            }else if(descriptionCondition.equals("scattered clouds")){
+                notificationContent+="\nAlso, it may rain, don't forget your umbrella";
+            }else if(descriptionCondition.equals("broken clouds")){
+                notificationContent+="\nAlso, it may rain, don't forget your umbrella";
+            }else if(descriptionCondition.equals("rain")){
+                notificationContent+="\nAlso, it is rainy, don't forget your umbrella, stay dry!";
+            }else if(descriptionCondition.equals("thunderstorm")){
+                notificationContent+="\nEXTREME WEATHER CONDITION!!, STAY AT HOME IF POSSIBLE";
+            }else if(descriptionCondition.equals("snow")){
+                notificationContent+="\nENJOY THE SNOW, STAY WARM!";
+            }else if(descriptionCondition.equals("mist")){
+                notificationContent+="\nMIST CONDITION!, DON'T FORGET TURN ON YOUR MIST LIGHT";
+            }
             Log.i("mainTEMP",temp);
             updataUI(temp+"°");
+            notificationBoardTextView.setText(notificationContent);
 
         } catch (ExecutionException | InterruptedException | JSONException e) {
             e.printStackTrace();
