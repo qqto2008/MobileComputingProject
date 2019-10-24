@@ -5,12 +5,16 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -26,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -87,9 +92,9 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             }
         });
         locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(200000);
+        locationRequest.setFastestInterval(200000);
         locationCallBack = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -119,6 +124,8 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 startActivity(intent);
             }
         });
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
     }
 
@@ -135,10 +142,14 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        try {
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-
     }
     @SuppressLint("StaticFieldLeak")
 
@@ -168,26 +179,37 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             JSONObject description = weatherCondition.getJSONObject(0);
             String descriptionCondition = description.getString("description");
             Log.i("descriptionqqqq",descriptionCondition);
-            if(descriptionCondition.equals("clear sky")){
-                weatherIcon.setImageResource(R.drawable.clearsky);
-            }else if (descriptionCondition.equals("few clouds")){
-                weatherIcon.setImageResource(R.drawable.fewclouds);
-            }else if(descriptionCondition.equals("scattered clouds")){
-                weatherIcon.setImageResource(R.drawable.scatteredclouds);
-            }else if(descriptionCondition.equals("broken clouds")){
-                weatherIcon.setImageResource(R.drawable.brokenclouds);
-            }else if(descriptionCondition.equals("shower rain")){
-                weatherIcon.setImageResource(R.drawable.showerrain);
-            }else if(descriptionCondition.equals("rain")){
-                weatherIcon.setImageResource(R.drawable.rain);
-            }else if(descriptionCondition.equals("thunderstorm")){
-                weatherIcon.setImageResource(R.drawable.thunderstorm);
-            }else if((descriptionCondition.equals("snow"))){
-                weatherIcon.setImageResource(R.drawable.snow);
-            }else if((descriptionCondition.equals("mist"))){
-                weatherIcon.setImageResource(R.drawable.mist);
-            }else {
-                weatherIcon.setImageResource(R.drawable.scatteredclouds);
+            switch (descriptionCondition) {
+                case "clear sky":
+                    weatherIcon.setImageResource(R.drawable.clearsky);
+                    break;
+                case "few clouds":
+                    weatherIcon.setImageResource(R.drawable.fewclouds);
+                    break;
+                case "scattered clouds":
+                    weatherIcon.setImageResource(R.drawable.scatteredclouds);
+                    break;
+                case "broken clouds":
+                    weatherIcon.setImageResource(R.drawable.brokenclouds);
+                    break;
+                case "shower rain":
+                    weatherIcon.setImageResource(R.drawable.showerrain);
+                    break;
+                case "rain":
+                    weatherIcon.setImageResource(R.drawable.rain);
+                    break;
+                case "thunderstorm":
+                    weatherIcon.setImageResource(R.drawable.thunderstorm);
+                    break;
+                case "snow":
+                    weatherIcon.setImageResource(R.drawable.snow);
+                    break;
+                case "mist":
+                    weatherIcon.setImageResource(R.drawable.mist);
+                    break;
+                default:
+                    weatherIcon.setImageResource(R.drawable.scatteredclouds);
+                    break;
             }
             String temp = weather.getString("temp");
             Log.i("mainTEMP",temp);

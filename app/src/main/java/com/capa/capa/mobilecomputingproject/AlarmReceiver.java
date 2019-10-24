@@ -9,9 +9,10 @@ import androidx.core.app.NotificationCompat;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Call other Notification Service class
+        String title = intent.getStringExtra("title");
+        String content = intent.getStringExtra("content");
         NotificationService notificationHelper = new NotificationService(context);
-        NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
+        NotificationCompat.Builder nb = notificationHelper.getChannelNotification(title,content);
         notificationHelper.getManager().notify(1, nb.build());
 
     }

@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/bg">
 
 
     <TimePicker
         android:id="@+id/timePicker1"
+        android:theme="@style/MyTimePickerWidgetStyle"
+        style="@style/MyTimePickerWidgetStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
@@ -41,11 +46,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout
-        android:layout_below="@+id/timePicker1"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="3">
+        android:layout_below="@+id/timePicker1"
+        android:weightSum="3"
+        android:layout_marginBottom="50dp">
 
         <Button
             android:id="@+id/addnewNoti"
@@ -53,11 +58,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="22dp"
             android:onClick="onClickSetupNotification"
-            android:text="ADD Notification"
+            android:text="ADD"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/roundedbutton"/>
 
         <Button
             android:id="@+id/gobackBtn"
@@ -65,7 +71,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClickBack"
-            android:text="BACK TO MAIN PAGE" />
+            android:text="BACK"
+            android:background="@drawable/roundedbutton"/>
 
         <Button
             android:id="@+id/clearAlarmBtn"
@@ -73,7 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDeleteAlarm"
-            android:text="Clear All Notification" />
+            android:text="Clear"
+            android:background="@drawable/roundedbutton"/>
     </LinearLayout>
 
 
