@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".SetupNotification"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -32,11 +33,14 @@
             android:label="@string/title_activity_maps_weather"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustPan"
+            android:parentActivityName=".MainActivity"
+            android:excludeFromRecents="true"
             />
         <activity
             android:name=".Registration"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity"
             />
         <activity
             android:name=".MainActivity"

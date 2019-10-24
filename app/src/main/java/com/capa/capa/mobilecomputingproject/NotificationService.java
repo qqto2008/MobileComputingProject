@@ -45,12 +45,12 @@ class NotificationService extends ContextWrapper {
     }
 
     //Define what happen in notification
-    public NotificationCompat.Builder getChannelNotification(String title,String content,String discription) {
+    public NotificationCompat.Builder getChannelNotification(String title,String content,String description) {
 
-        String mDrawableName = discription.trim();
+        String mDrawableName = description.trim();
         mDrawableName = mDrawableName.replace(" ","");
         int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
-        Intent resultIntent = new Intent(this,MapsWeatherActivity.class);
+        Intent resultIntent = new Intent(this,MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle(title) //Title
