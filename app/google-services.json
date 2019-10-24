@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "307845034661",
+    "firebase_url": "https://mobilecomputingproject-21811.firebaseio.com",
+    "project_id": "mobilecomputingproject-21811",
+    "storage_bucket": "mobilecomputingproject-21811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307845034661:android:f642c29370b2157d0f134c",
+        "android_client_info": {
+          "package_name": "com.capa.capa.mobilecomputingproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307845034661-4eu7haoj1qbpine2eat4pbrd2h8f1fc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBj-O_cHW60N527kA4kqLy9isi4J3PikVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307845034661-4eu7haoj1qbpine2eat4pbrd2h8f1fc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
