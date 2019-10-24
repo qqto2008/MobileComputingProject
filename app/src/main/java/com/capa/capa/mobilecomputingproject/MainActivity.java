@@ -8,8 +8,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     String email, password;
+    ImageView umbrellaImage,windmillImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        umbrellaImage = findViewById(R.id.umbrellaImage);
+        windmillImage = findViewById(R.id.windMillImage);
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setDuration(4000);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        windmillImage.startAnimation(rotateAnimation);
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
     }
 
     public void openRegistration(){

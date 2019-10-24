@@ -21,13 +21,35 @@
             android:text="SIGN UP"
             android:textColor="#FFFFFF"
             android:textSize="20sp"/>
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:text="Lorem ipsum dolor sit amet."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/umbrellaImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="left"
+                android:src="@drawable/umbrella"
+                android:translationZ="1.0dp" />
+
+            <ImageView
+                android:id="@+id/windMillImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/windmill"
+                android:translationZ="1.0dp" />
+            <ImageView
+                android:id="@+id/rainbow"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/rainbow"
+                android:translationZ="1.0dp"
+                android:layout_gravity="right"/>
+        </LinearLayout>
 
     </LinearLayout>
 

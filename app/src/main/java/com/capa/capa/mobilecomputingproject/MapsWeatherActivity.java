@@ -4,11 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -20,7 +31,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,7 +57,9 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallBack;
-    TextView degreeTextView;
+    TextView degreeTextView,notificationBoardTextView;
+    Button goToNotification;
+    ImageView weatherIcon;
     //b6907d289e10d714a6e88b30761fae22 api key
 
     @SuppressLint("SetTextI18n")
@@ -58,13 +74,25 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         degreeTextView = findViewById(R.id.degreeTextView);
+        notificationBoardTextView = findViewById(R.id.notificationboard);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 getTemp(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
+                LatLng sydney = new LatLng(location.getLatitude(),location.getLongitude());
+
+                int height = 100;
+                int width = 100;
+                BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.mite);
+                Bitmap b=bitmapdraw.getBitmap();
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                mMap.addMarker(new MarkerOptions().position(sydney)
+                        .title("Marker in Sydney").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             }
         });
 
+        weatherIcon = findViewById(R.id.weatherIcon);
 
 
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -79,9 +107,9 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             }
         });
         locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(200000);
+        locationRequest.setFastestInterval(200000);
         locationCallBack = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -92,9 +120,8 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 for (Location location:locationResult.getLocations()){
 
                     LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(myLocation).title("Marker in Sydney"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
@@ -103,6 +130,17 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 }
             }
         };
+
+        goToNotification = findViewById(R.id.goToNotificationBtn);
+        goToNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsWeatherActivity.this,SetupNotification.class);
+                startActivity(intent);
+            }
+        });
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
     }
 
@@ -119,35 +157,17 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-
-    }
-    class WeatherData extends AsyncTask<String,Void,String> {
-        @Override
-        protected String doInBackground(String... addresses) {
-            try {
-                URL url = new URL(addresses[0]);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.connect();
-                InputStream is = httpURLConnection.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(is);
-                int data = inputStreamReader.read();
-                String content = "";
-                char ch;
-                while (data !=-1){
-                    ch = (char) data;
-                    content = content+ch;
-                    data = inputStreamReader.read();
-                }
-                return content;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+        try {
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
+        mMap = googleMap;
     }
+    @SuppressLint("StaticFieldLeak")
+
 
     @Override
     protected void onResume() {
@@ -163,16 +183,90 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     }
     private void getTemp(String lat, String lng){
         String content;
-        MapsWeatherActivity.WeatherData weatherData = new MapsWeatherActivity.WeatherData();
+        WeatherData weatherData = new WeatherData();
         try {
             content = weatherData
                     .execute("https://openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&appid=b6907d289e10d714a6e88b30761fae22")
                     .get();
             JSONObject jsonObject = new JSONObject(content);
             JSONObject weather = jsonObject.getJSONObject("main");
+            JSONArray weatherCondition = jsonObject.getJSONArray("weather");
+            JSONObject description = weatherCondition.getJSONObject(0);
+            String descriptionCondition = description.getString("description");
+            Log.i("descriptionqqqq",descriptionCondition);
+            switch (descriptionCondition) {
+                case "clear sky":
+                    weatherIcon.setImageResource(R.drawable.clearsky);
+                    break;
+                case "few clouds":
+                    weatherIcon.setImageResource(R.drawable.fewclouds);
+                    break;
+                case "scattered clouds":
+                    weatherIcon.setImageResource(R.drawable.scatteredclouds);
+                    break;
+                case "broken clouds":
+                    weatherIcon.setImageResource(R.drawable.brokenclouds);
+                    break;
+                case "shower rain":
+                    weatherIcon.setImageResource(R.drawable.showerrain);
+                    break;
+                case "rain":
+                    weatherIcon.setImageResource(R.drawable.rain);
+                    break;
+                case "thunderstorm":
+                    weatherIcon.setImageResource(R.drawable.thunderstorm);
+                    break;
+                case "snow":
+                    weatherIcon.setImageResource(R.drawable.snow);
+                    break;
+                case "mist":
+                    weatherIcon.setImageResource(R.drawable.mist);
+                    break;
+                default:
+                    weatherIcon.setImageResource(R.drawable.scatteredclouds);
+                    break;
+            }
             String temp = weather.getString("temp");
+            String notificationContent = "";
+            double temperature = Double.parseDouble(temp);
+            if(temperature<0){
+                notificationContent+="you need to keep your head and ears warm when you are inactive with at least two layers, such as a beanie or balaclava under the hood of your jacket";
+            }else if(0<=temperature&&temperature<10){
+                notificationContent+="\nOuterwear: Padded or Puffer Coat, Overcoats (Trench Coats, Fur or Faux Fur Coats), Down Jackets\n" +
+                        "Tops: Sweaters, Jumpers, Turtlenecks\n" +
+                        "Bottoms: Jeans, Trousers";
+            }else if(temperature>=10&&temperature<20){
+                notificationContent+="\nTops (for Layering): Shirts, Hoodies, Dresses\n" +
+                        "Lightweight Outerwear: Leather jackets, Biker jackets, Parkas, Pea Coats\n" +
+                        "Bottoms: Jeans, Trousers, Skirts Shoes: Sneakers, Boots";
+
+            }else if(temperature>=20&&temperature<30){
+                notificationContent+="This is summer weather – no need to wear layers of clothing or thick fabric. Instead, find something that will keep you fresh. It can get humid at this time of the year too, which will make you feel even hotter. ";
+            }else if(temperature>=30&&temperature<40){
+                notificationContent+="You need to adjust your wardrobe and wear airy clothes. Avoid wearing tight garments as they may lead to skin irritation due to friction and heat.";
+            }else if(temperature>=40){
+                notificationContent+="You need to adjust your wardrobe and wear airy clothes. Avoid wearing tight garments as they may lead to skin irritation due to friction and heat.";
+            }
+            if(descriptionCondition.equals("few clouds")){
+
+            }else if(descriptionCondition.equals("clear sky")){
+
+            }else if(descriptionCondition.equals("scattered clouds")){
+                notificationContent+="\nAlso, it may rain, don't forget your umbrella";
+            }else if(descriptionCondition.equals("broken clouds")){
+                notificationContent+="\nAlso, it may rain, don't forget your umbrella";
+            }else if(descriptionCondition.equals("rain")){
+                notificationContent+="\nAlso, it is rainy, don't forget your umbrella, stay dry!";
+            }else if(descriptionCondition.equals("thunderstorm")){
+                notificationContent+="\nEXTREME WEATHER CONDITION!!, STAY AT HOME IF POSSIBLE";
+            }else if(descriptionCondition.equals("snow")){
+                notificationContent+="\nENJOY THE SNOW, STAY WARM!";
+            }else if(descriptionCondition.equals("mist")){
+                notificationContent+="\nMIST CONDITION!, DON'T FORGET TURN ON YOUR MIST LIGHT";
+            }
             Log.i("mainTEMP",temp);
             updataUI(temp+"°");
+            notificationBoardTextView.setText(notificationContent);
 
         } catch (ExecutionException | InterruptedException | JSONException e) {
             e.printStackTrace();
