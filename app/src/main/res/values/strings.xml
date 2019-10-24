@@ -10,4 +10,6 @@
     <string name="channel_name">1</string>
     <string name="channel_description">channel 1</string>
     <string name="time_current">The Notification set time is:</string>
+    <string name="set_notification">Set Notification</string>
+    <string name="todo">TODO</string>
 </resources>

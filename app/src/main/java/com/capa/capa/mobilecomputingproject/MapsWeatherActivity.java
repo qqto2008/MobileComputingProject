@@ -12,6 +12,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,6 +50,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     LocationCallback locationCallBack;
     TextView degreeTextView;
     Button goToNotification;
+    ImageView weatherIcon;
     //b6907d289e10d714a6e88b30761fae22 api key
 
     @SuppressLint("SetTextI18n")
@@ -69,6 +72,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
+        weatherIcon = findViewById(R.id.weatherIcon);
 
 
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -96,9 +100,8 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 for (Location location:locationResult.getLocations()){
 
                     LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(myLocation).title("Marker in Sydney"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
@@ -137,6 +140,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
         // Add a marker in Sydney and move the camera
 
     }
+    @SuppressLint("StaticFieldLeak")
     class WeatherData extends AsyncTask<String,Void,String> {
         @Override
         protected String doInBackground(String... addresses) {
@@ -183,6 +187,31 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                     .get();
             JSONObject jsonObject = new JSONObject(content);
             JSONObject weather = jsonObject.getJSONObject("main");
+            JSONArray weatherCondition = jsonObject.getJSONArray("weather");
+            JSONObject description = weatherCondition.getJSONObject(0);
+            String descriptionCondition = description.getString("description");
+            Log.i("descriptionqqqq",descriptionCondition);
+            if(descriptionCondition.equals("clear sky")){
+                weatherIcon.setImageResource(R.drawable.clearsky);
+            }else if (descriptionCondition.equals("few clouds")){
+                weatherIcon.setImageResource(R.drawable.fewclouds);
+            }else if(descriptionCondition.equals("scattered clouds")){
+                weatherIcon.setImageResource(R.drawable.scatteredclouds);
+            }else if(descriptionCondition.equals("broken clouds")){
+                weatherIcon.setImageResource(R.drawable.brokenclouds);
+            }else if(descriptionCondition.equals("shower rain")){
+                weatherIcon.setImageResource(R.drawable.showerrain);
+            }else if(descriptionCondition.equals("rain")){
+                weatherIcon.setImageResource(R.drawable.rain);
+            }else if(descriptionCondition.equals("thunderstorm")){
+                weatherIcon.setImageResource(R.drawable.thunderstorm);
+            }else if((descriptionCondition.equals("snow"))){
+                weatherIcon.setImageResource(R.drawable.snow);
+            }else if((descriptionCondition.equals("mist"))){
+                weatherIcon.setImageResource(R.drawable.mist);
+            }else {
+                weatherIcon.setImageResource(R.drawable.scatteredclouds);
+            }
             String temp = weather.getString("temp");
             Log.i("mainTEMP",temp);
             updataUI(temp+"°");
