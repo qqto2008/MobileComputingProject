@@ -141,30 +141,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
 
     }
     @SuppressLint("StaticFieldLeak")
-    class WeatherData extends AsyncTask<String,Void,String> {
-        @Override
-        protected String doInBackground(String... addresses) {
-            try {
-                URL url = new URL(addresses[0]);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.connect();
-                InputStream is = httpURLConnection.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(is);
-                int data = inputStreamReader.read();
-                String content = "";
-                char ch;
-                while (data !=-1){
-                    ch = (char) data;
-                    content = content+ch;
-                    data = inputStreamReader.read();
-                }
-                return content;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
+
 
     @Override
     protected void onResume() {
@@ -180,7 +157,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     }
     private void getTemp(String lat, String lng){
         String content;
-        MapsWeatherActivity.WeatherData weatherData = new MapsWeatherActivity.WeatherData();
+        WeatherData weatherData = new WeatherData();
         try {
             content = weatherData
                     .execute("https://openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&appid=b6907d289e10d714a6e88b30761fae22")
