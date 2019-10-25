@@ -11,8 +11,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String title = intent.getStringExtra("title");
         String content = intent.getStringExtra("content");
-        String description = intent.getStringExtra("discription");
+        String description = intent.getStringExtra("description");
         NotificationService notificationHelper = new NotificationService(context);
+        assert description != null;
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification(title,content,description);
         notificationHelper.getManager().notify(1, nb.build());
 

@@ -187,6 +187,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             JSONArray weatherCondition = jsonObject.getJSONArray("weather");
             JSONObject description = weatherCondition.getJSONObject(0);
             String descriptionCondition = description.getString("description");
+            Log.i("fuckingshit",descriptionCondition);
             switch (descriptionCondition) {
                 case "clear sky":
                     weatherIcon.setImageResource(R.drawable.clearsky);
@@ -241,16 +242,16 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 notificationContent+="You need to adjust your wardrobe and wear airy clothes. Avoid wearing tight garments as they may lead to skin irritation due to friction and heat.";
             }
             if(descriptionCondition.equals("few clouds")){
-
-            }else if(descriptionCondition.equals("clear sky")){
-
+                notificationContent+="\nAlso, it may rain, don't forget your umbrella";
             }else if(descriptionCondition.equals("scattered clouds")){
                 notificationContent+="\nAlso, it may rain, don't forget your umbrella";
             }else if(descriptionCondition.equals("broken clouds")){
                 notificationContent+="\nAlso, it may rain, don't forget your umbrella";
             }else if(descriptionCondition.equals("rain")){
                 notificationContent+="\nAlso, it is rainy, don't forget your umbrella, stay dry!";
-            }else if(descriptionCondition.equals("thunderstorm")){
+            }else if(descriptionCondition.equals("shower rain")){
+                notificationContent="it is rainy, don't forget your umbrella, stay dry!";
+            } else if(descriptionCondition.equals("thunderstorm")){
                 notificationContent+="\nEXTREME WEATHER CONDITION!!, STAY AT HOME IF POSSIBLE";
             }else if(descriptionCondition.equals("snow")){
                 notificationContent+="\nENJOY THE SNOW, STAY WARM!";

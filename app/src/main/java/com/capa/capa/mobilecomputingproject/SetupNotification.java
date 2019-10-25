@@ -127,8 +127,8 @@ public class SetupNotification extends AppCompatActivity {
                     }
                     if(descriptionCondition.equals("few clouds")){
 
-                    }else if(descriptionCondition.equals("clear sky")){
-
+                    }else if(descriptionCondition.equals("shower rain")){
+                        notificationContent+="\nAlso, it is rainy, don't forget your umbrella";
                     }else if(descriptionCondition.equals("scattered clouds")){
                         notificationContent+="\nAlso, it may rain, don't forget your umbrella";
                     }else if(descriptionCondition.equals("broken clouds")){
@@ -144,7 +144,7 @@ public class SetupNotification extends AppCompatActivity {
                     }
                     intent.putExtra("title", descriptionCondition+"  "+temp+"°");
                     intent.putExtra("content",notificationContent);
-                    intent.putExtra("discription",descriptionCondition);
+                    intent.putExtra("description",descriptionCondition);
 
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(SetupNotification.this, 1, intent, 0);
                     assert alarmManager != null;
