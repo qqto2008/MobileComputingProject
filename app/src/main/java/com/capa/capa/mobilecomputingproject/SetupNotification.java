@@ -158,9 +158,8 @@ public class SetupNotification extends AppCompatActivity {
     }
 
     public void onClickBack(View v) {
-        Intent intent = getIntent();
-        setResult(RESULT_OK, intent); // set result code and bundle data for response
-        finish(); // closes the activity, pass data to parent
+        Intent intent = new Intent(this,MapsWeatherActivity.class);
+        startActivity(intent);
     }
 
     public void onDeleteAlarm(View v) {
