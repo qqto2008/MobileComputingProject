@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -114,7 +115,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
 
                     LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
@@ -274,13 +275,14 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
         String keyWord;
         if (temp>25){
             keyWord="Cold Drink";
-            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+
+            icon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("cold",100,100));
         }else if (temp<20){
             keyWord="Hot Drink";
-            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+            icon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("coffee",100,100));
         }else {
             keyWord="Drink";
-            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+            icon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("coffee",100,100));
         }
         String httpsconections = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+keyWord+"&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&locationbias=circle:2000@"+lat+","+lng+"&key=AIzaSyBG6Dz2-h3rVSE0pzXZ7yBFq1Dmv7cixhc";
 
@@ -326,6 +328,11 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
         }
         return p1;
 
+    }
+    public Bitmap resizeMapIcons(String iconName,int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
     }
 
 }
