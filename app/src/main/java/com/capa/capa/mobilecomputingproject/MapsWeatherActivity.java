@@ -2,15 +2,15 @@ package com.capa.capa.mobilecomputingproject;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -19,9 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,14 +41,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-
+//https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mongolian%20grill&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&locationbias=circle:2000@47.6918452,-122.2226413&key=AIzaSyBG6Dz2-h3rVSE0pzXZ7yBFq1Dmv7cixhc
 public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -87,14 +82,12 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 Bitmap b=bitmapdraw.getBitmap();
                 Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
                 mMap.addMarker(new MarkerOptions().position(sydney)
-                        .title("Marker in Sydney").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                        .title("My Location").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
             }
         });
-
         weatherIcon = findViewById(R.id.weatherIcon);
-
-
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -178,7 +171,7 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
     private void startLocationUpdates() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallBack, Looper.myLooper());
     }
-    private void updataUI(String tempInfo){
+    private void updateUI(String tempInfo){
         degreeTextView.setText(tempInfo);
     }
     private void getTemp(String lat, String lng){
@@ -193,7 +186,6 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
             JSONArray weatherCondition = jsonObject.getJSONArray("weather");
             JSONObject description = weatherCondition.getJSONObject(0);
             String descriptionCondition = description.getString("description");
-            Log.i("descriptionqqqq",descriptionCondition);
             switch (descriptionCondition) {
                 case "clear sky":
                     weatherIcon.setImageResource(R.drawable.clearsky);
@@ -265,12 +257,75 @@ public class MapsWeatherActivity extends FragmentActivity implements OnMapReadyC
                 notificationContent+="\nMIST CONDITION!, DON'T FORGET TURN ON YOUR MIST LIGHT";
             }
             Log.i("mainTEMP",temp);
-            updataUI(temp+"°");
+            updateUI(temp+"°");
             notificationBoardTextView.setText(notificationContent);
+            getPlaces(lat,lng,temperature);
+            Log.i("COLD DRINK","COLD DRINK");
 
         } catch (ExecutionException | InterruptedException | JSONException e) {
             e.printStackTrace();
         }
+    }
+    private void getPlaces(String lat, String lng, double temp) throws ExecutionException, InterruptedException, JSONException {
+        Log.i("COLD DRINK","COLD DRINK");
+        String content;
+        BitmapDescriptor icon;
+        WeatherData placeData = new WeatherData();
+        String keyWord;
+        if (temp>25){
+            keyWord="Cold Drink";
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+        }else if (temp<20){
+            keyWord="Hot Drink";
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+        }else {
+            keyWord="Drink";
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.coffee);
+        }
+        String httpsconections = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+keyWord+"&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&locationbias=circle:2000@"+lat+","+lng+"&key=AIzaSyBG6Dz2-h3rVSE0pzXZ7yBFq1Dmv7cixhc";
+
+        content = placeData
+                .execute(httpsconections)
+                .get();
+
+        JSONObject jsonObject = new JSONObject(content);
+        Log.i("json shit", String.valueOf(jsonObject));
+        JSONArray candicates = jsonObject.getJSONArray("candidates");
+        JSONObject candicatesObject = candicates.getJSONObject(0);
+        String drinkString = candicatesObject.getString("formatted_address");
+        String shopName = candicatesObject.getString("name");
+        LatLng shopLocation = getLocationFromAddress(this,drinkString);
+
+
+        mMap.addMarker(new MarkerOptions().position(shopLocation).title(shopName).icon(icon));
+
+
+    }
+    public LatLng getLocationFromAddress(Context context, String strAddress)
+    {
+        Geocoder coder= new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try
+        {
+            address = coder.getFromLocationName(strAddress, 5);
+            if(address==null)
+            {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return p1;
+
     }
 
 }

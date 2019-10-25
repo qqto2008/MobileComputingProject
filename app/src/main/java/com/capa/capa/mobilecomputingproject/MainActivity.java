@@ -87,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         rotateAnimation.setDuration(4000);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         windmillImage.startAnimation(rotateAnimation);
-        Window w = getWindow();
-        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
 
     }
 

@@ -7,13 +7,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
 
 class NotificationService extends ContextWrapper {
 
@@ -50,14 +52,17 @@ class NotificationService extends ContextWrapper {
         String mDrawableName = description.trim();
         mDrawableName = mDrawableName.replace(" ","");
         int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),resID);
         Intent resultIntent = new Intent(this,MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle(title) //Title
                 .setContentText(content) //Text Inside notification
                 .setSmallIcon(resID)
+                .setLargeIcon(icon)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent); //Small Icon (res->drawable)
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(content)); //Small Icon (res->drawable)
 
     }
 }
